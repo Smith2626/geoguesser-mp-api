@@ -1,18 +1,24 @@
-import { createClient } from '@supabase/supabase-js';
-import Filter from 'bad-words';
+// api/send-chat-message.js
+
+// --- THE FIX: Changed from 'import' to 'require' for better compatibility ---
+const { createClient } = require('@supabase/supabase-js');
+const Filter = require('bad-words');
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const profanityFilter = new Filter();
 
 export default async function handler(req, res) {
+  // Add CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // Handle pre-flight OPTIONS request
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   
+  // Ensure the request method is POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
